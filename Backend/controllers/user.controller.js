@@ -31,7 +31,11 @@ export const register = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 
@@ -92,7 +96,11 @@ export const login = async (req, res) => {
         success: true,
       });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 
@@ -103,14 +111,18 @@ export const logout = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
-    const file = req.file
+    const file = req.file;
     if (!fullname || !email || !phoneNumber || !bio || !skills) {
       return res.status(400).json({
         message: "Something is missing",
@@ -132,11 +144,11 @@ export const updateProfile = async (req, res) => {
     }
 
     //updating data
-    if(fullname) user.fullname = fullname;
-    if(email) user.email = email;
-    if(phoneNumber) user.phoneNumber = phoneNumber;
-    if(skills) user.profile.skills = skills;
-    if(bio) user.profile.bio = bio;
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (skills) user.profile.skills = skills;
+    if (bio) user.profile.bio = bio;
 
     //resume comes later
 
@@ -152,12 +164,15 @@ export const updateProfile = async (req, res) => {
     };
 
     return res.status(200).json({
-        message: "Profile updated successfully",
-        user,
-        success: true
-    })
+      message: "Profile updated successfully",
+      user,
+      success: true,
+    });
   } catch (error) {
-    console.log(error);
-    
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
