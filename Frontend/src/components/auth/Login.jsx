@@ -59,7 +59,7 @@ function Login() {
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-4 my-5">
               <div className="flex items-center gap-3">
-                <Input
+                <input
                   type="radio"
                   name="role"
                   value="student"
@@ -70,7 +70,7 @@ function Login() {
                 <Label htmlFor="option-one">Student</Label>
               </div>
               <div className="flex items-center gap-3">
-                <Input
+                <input
                   type="radio"
                   name="role"
                   value="recruiter"
