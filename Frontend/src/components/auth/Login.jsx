@@ -4,9 +4,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { USER_API_END_POINT } from "@/utils/constant";
+import { toast } from "sonner";
 
 function Login() {
+  const navigate = useNavigate();
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -24,8 +28,22 @@ function Login() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
-  }
+
+    try {
+      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -63,7 +81,7 @@ function Login() {
                   type="radio"
                   name="role"
                   value="student"
-                  checked={input.role==='student'}
+                  checked={input.role === "student"}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
@@ -74,7 +92,7 @@ function Login() {
                   type="radio"
                   name="role"
                   value="recruiter"
-                  checked={input.role==='recruiter'}
+                  checked={input.role === "recruiter"}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
@@ -83,12 +101,12 @@ function Login() {
             </RadioGroup>
           </div>
           <Button type="submit" className="w-full my-4">
-            Signup
+            Login
           </Button>
           <span className="text-sm">
             Don't have an acount?{" "}
             <Link to="/signup" className="text-blue-600">
-                Signup
+              Signup
             </Link>
           </span>
         </form>
