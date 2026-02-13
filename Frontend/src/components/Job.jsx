@@ -4,13 +4,16 @@ import { Bookmark } from 'lucide-react'
 import { Avatar } from './ui/avatar'
 import { AvatarImage } from './ui/avatar'
 import { Badge } from './ui/badge'
+import { useNavigate } from 'react-router-dom'
 
 const Job = () => {
+    const navigate = useNavigate();
+    const jobId = "sdsdvdsv";
   return (
     <div className='p-5 rounded-md shadow-xl bg-white border border-gray-100'>
         <div className='flex items-center justify-between'>
             <p className='text-sm text-gray-500'>2 days ago</p>
-            <Button variant='outline' className='rounded-full' size="icon"><Bookmark/></Button>
+            <Button variant='outline' className='rounded-full cursor-pointer' size="icon"><Bookmark/></Button>
         </div>
         <div className='flex items-center gap-2 my-2'>
             <Button className='p-6' variant='outline' size='icon'>
@@ -33,8 +36,8 @@ const Job = () => {
             <Badge className='text-[#7209b7] font-bold' variant="ghost">14LPA</Badge>
         </div>
         <div className='flex items-center gap-2 mt-4'>
-            <Button variant='outline'>Details</Button>
-            <Button className="bg-[#7209b7]">Save for Later</Button>
+            <Button onClick={() => navigate(`/description/${jobId}`)} variant='outline' className='cursor-pointer'>Details</Button>
+            <Button className="bg-[#7209b7] cursor-pointer">Save for Later</Button>
         </div>
     </div>
   )
