@@ -43,13 +43,13 @@ function Login() {
         withCredentials: true,
       });
       if (res.data.success) {
-        dispatch(setUser(res.data.user))
+        dispatch(setUser(res.data.user));
         navigate("/");
         toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     } finally {
       dispatch(setLoading(false));
     }
@@ -64,25 +64,27 @@ function Login() {
           className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
         >
           <h1 className="font-bold text-xl mb-5">Log In</h1>
-          <div className="my-2">
-            <Label className="my-2">Email</Label>
-            <Input
-              type="email"
-              placeholder="Enter email here"
-              value={input.email}
-              name="email"
-              onChange={changeEventHandler}
-            />
-          </div>
-          <div className="my-2">
-            <Label className="my-2">Password</Label>
-            <Input
-              type="password"
-              placeholder="Enter password here"
-              value={input.password}
-              name="password"
-              onChange={changeEventHandler}
-            />
+          <div >
+            <div className="my-2">
+              <Label className="my-2">Email</Label>
+              <Input
+                type="email"
+                placeholder="Enter email here"
+                value={input.email}
+                name="email"
+                onChange={changeEventHandler}
+              />
+            </div>
+            <div className="my-2">
+              <Label className="my-2">Password</Label>
+              <Input
+                type="password"
+                placeholder="Enter password here"
+                value={input.password}
+                name="password"
+                onChange={changeEventHandler}
+              />
+            </div>
           </div>
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-4 my-5">
@@ -112,7 +114,7 @@ function Login() {
           </div>
           {loading ? (
             <Button className="w-full my-4">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please Wait
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait
             </Button>
           ) : (
             <Button type="submit" className="w-full my-4">

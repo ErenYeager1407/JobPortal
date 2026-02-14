@@ -8,11 +8,13 @@ import { Label } from "./ui/label";
 import AppliedJobTable from "./AppliedJobTable";
 import { setUser } from "@/redux/authSlice";
 import UpdateProfileDialog from "./UpdateProfileDialog";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const skills = ["Html", "CSS", "JS", "react", "MERN"];
   const isResume = true;
   const [open, setOpen] = useState(false)
+  const {user} = useSelector(store => store.auth)
+  const skills = user.profile.skills.split(",");
   return (
     <div>
       <Navbar />
@@ -23,14 +25,13 @@ const Profile = () => {
               <AvatarImage src="https://img.freepik.com/free-vector/bird-colorful-gradient-design-vector_343694-2506.jpg?semt=ais_user_personalization&w=740&q=80" />
             </Avatar>
             <div>
-              <h1 className="font-bold text-xl">Full Name</h1>
+              <h1 className="font-bold text-xl">{user.fullname}</h1>
               <p className="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-                perferendis doloremque vero et?
+                {user.profile.bio}
               </p>
             </div>
           </div>
-          <Button variant="outline" className="text-right" onClick={() => setOpen(true)}>
+          <Button variant="outline" className="text-right cursor-pointer" onClick={() => setOpen(true)}>
             <Pen />
           </Button>
         </div>
@@ -38,11 +39,11 @@ const Profile = () => {
         <div className="my-5">
           <div className="flex items-center gap-3 my-2">
             <Mail />
-            <span>akash@mail</span>
+            <span>{user.email}</span>
           </div>
           <div className="flex items-center gap-3 my-2">
             <Contact />
-            <span>81616338384</span>
+            <span>{user.phoneNumber}</span>
           </div>
         </div>
         <div className="my-5">
@@ -60,7 +61,7 @@ const Profile = () => {
         <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label className='text-md folnt-bold'>Resume</Label>
             {
-                isResume ? <a target="blank" href="https://pornhub.com" className="text-blue-500 underline">Resume here</a> : <span>NA</span>
+                isResume ? <a target="blank" href="https://pornhub.com" className="text-blue-500 underline">{user.profile.resumeOriginalName}</a> : <span>NA</span>
             }
         </div>
       </div>
