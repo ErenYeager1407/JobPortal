@@ -10,7 +10,7 @@ const LatestJobs = () => {
         <div className='grid grid-cols-3 gap-4 my-5'>
             {
                 randomJobs.slice(0, 6).map((item, index) => {
-                    return <LatestJobCards/>
+                    return <LatestJobCards key={index}/>
                 })
             }
         </div>
