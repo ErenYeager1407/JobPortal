@@ -1,27 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import Navbar from "./shared/Navbar";
+import { setSingleJob } from "@/redux/jobSlice";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { JOB_API_END_POINT } from "@/utils/constant";
 
 const JobDescription = () => {
-  const isApplied = false;
   const [open, setOpen] = useState(false)
+  const dispatch = useDispatch()
+  const params = useParams();
+  const jobId = params.id
+  const {singleJob} = useSelector(store => store.job)
+  const {user} = useSelector(store => store.auth)
+  const isApplied = singleJob?.applications?.some(application => application.applicant === user?._id) || false
+  useEffect(() => {
+        const fetchSingleJob = async () => {
+            try {
+                const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
+                if(res.data.success){
+                    dispatch(setSingleJob(res.data.job))
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchSingleJob();
+    }, [jobId, dispatch])
   return (
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto my-4 p-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-bold text-xl">Frontend Developer</h1>
+            <h1 className="font-bold text-xl">{singleJob?.company?.name}</h1>
             <div className="flex items-center gap-2 mt-4">
               <Badge className="text-blue-700 font-bold" variant="outline">
-                12 Positions
+                {singleJob?.position} positions
               </Badge>
               <Badge className="text-[#F83002] font-bold" variant="outline">
-                Part time
+                {singleJob?.jobType}
               </Badge>
               <Badge className="text-[#7209b7] font-bold" variant="outline">
-                14LPA
+                {singleJob?.salary}LPA
               </Badge>
             </div>
           </div>
@@ -39,43 +62,43 @@ const JobDescription = () => {
           <h1 className="font-bold my-1">
             Role:
             <span className="pl-4 font-normal text-gray-800">
-              Frontend Developer
+              {singleJob?.title}
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Location:
             <span className="pl-4 font-normal text-gray-800">
-              Hyderbad
+              {singleJob?.location}
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Description:
             <span className="pl-4 font-normal text-gray-800">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis, maxime.
+              {singleJob?.description}
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Experience:
             <span className="pl-4 font-normal text-gray-800">
-              2yrs
+              {singleJob?.expirenceLevel}yrs
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Salary:
             <span className="pl-4 font-normal text-gray-800">
-              12LPA
+              {singleJob?.salary}LPA
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Total Applicants:
             <span className="pl-4 font-normal text-gray-800">
-              4
+              {singleJob?.applications?.length}
             </span>
           </h1>
           <h1 className="font-bold my-1">
             Posted Date:
             <span className="pl-4 font-normal text-gray-800">
-              17-07-2024
+              {singleJob?.createdAt.split('T')[0]}
             </span>
           </h1>
         </div>

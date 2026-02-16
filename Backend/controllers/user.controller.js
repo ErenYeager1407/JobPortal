@@ -16,20 +16,33 @@ export const register = async (req, res) => {
       });
     }
     const user = await User.findOne({ email });
+
     if (user) {
       return res.status(400).json({
         message: "user already exist with this email",
         success: false,
       });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
+    const userData = {
       fullname,
       email,
       phoneNumber,
       password: hashedPassword,
       role,
-    });
+      profile: {}
+    };
+
+    // Handle optional file upload
+    const file = req.file;
+    if (file) {
+      const fileUri = getDataUri(file);
+      const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
+      userData.profile.profilePhoto = cloudinaryResponse.secure_url;
+    }
+
+    await User.create(userData);
     return res.status(201).json({
       message: "account created Successfully",
       success: true,

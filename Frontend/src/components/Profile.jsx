@@ -11,10 +11,10 @@ import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const isResume = true;
-  const [open, setOpen] = useState(false)
-  const {user} = useSelector(store => store.auth)
-  const skills = user.profile.skills.split(",");
+  const [open, setOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  const isResume = user?.profile?.resume;
+  const skills = user?.profile?.skills ? user.profile.skills.split(",") : "";
   return (
     <div>
       <Navbar />
@@ -22,16 +22,22 @@ const Profile = () => {
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src="https://img.freepik.com/free-vector/bird-colorful-gradient-design-vector_343694-2506.jpg?semt=ais_user_personalization&w=740&q=80" />
+              <AvatarImage
+                src={
+                  user?.profile?.profilePhoto || "https://github.com/shadcn.png"
+                }
+              />
             </Avatar>
             <div>
               <h1 className="font-bold text-xl">{user.fullname}</h1>
-              <p className="text-sm text-gray-500">
-                {user.profile.bio}
-              </p>
+              <p className="text-sm text-gray-500">{user.profile.bio}</p>
             </div>
           </div>
-          <Button variant="outline" className="text-right cursor-pointer" onClick={() => setOpen(true)}>
+          <Button
+            variant="outline"
+            className="text-right cursor-pointer"
+            onClick={() => setOpen(true)}
+          >
             <Pen />
           </Button>
         </div>
@@ -47,8 +53,8 @@ const Profile = () => {
           </div>
         </div>
         <div className="my-5">
-          <h1>Skills</h1>
-          <div className="flex items-center gap-1">
+          <h1 className="font-bold">Skills</h1>
+          <div className="flex items-center gap-1 text-bold">
             {skills.length != 0 ? (
               skills.map((item, index) => {
                 return <Badge key={index}>{item}</Badge>;
@@ -59,17 +65,26 @@ const Profile = () => {
           </div>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label className='text-md folnt-bold'>Resume</Label>
-            {
-                isResume ? <a target="blank" href={user?.profile?.resume} className="text-blue-500 underline">{user.profile.resumeOriginalName}</a> : <span>NA</span>
-            }
+          <Label className="text-md font-bold">Resume</Label>
+          {isResume ? (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={user?.profile?.resume}
+              className="text-blue-500 underline"
+            >
+              {user?.profile?.resumeOriginalName || "View Resume"}
+            </a>
+          ) : (
+            <span>NA</span>
+          )}
         </div>
       </div>
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl">
-            <h1 className="font-bold text-lg my-4">Applied Jobs</h1>
-            <AppliedJobTable/>
-        </div>
-        <UpdateProfileDialog open={open} setOpen={setOpen}/>
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
+        <h1 className="font-bold text-lg my-4">Applied Jobs</h1>
+        <AppliedJobTable />
+      </div>
+      <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
   );
 };

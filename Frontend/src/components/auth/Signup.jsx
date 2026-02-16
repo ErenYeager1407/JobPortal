@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import store from "@/redux/store";
 import { setLoading } from "@/redux/authSlice";
+// import getDataUri from ''
 
 function Signup() {
   const navigate = useNavigate()
@@ -37,6 +38,13 @@ function Signup() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!input.fullname || !input.email || !input.phoneNumber || !input.password || !input.role) {
+      toast.error("All fields are required");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("fullname", input.fullname)
     formData.append("email", input.email)
@@ -60,8 +68,9 @@ function Signup() {
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message)
+      console.error(error);
+      const errorMessage = error.response?.data?.message || error.message || "Signup failed. Please try again.";
+      toast.error(errorMessage);
     }
     finally{
       dispatch(setLoading(false))

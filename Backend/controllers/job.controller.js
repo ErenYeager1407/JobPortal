@@ -78,7 +78,7 @@ export const getAllJobs = async (req, res) => {
     }
     return res.status(200).json({
       jobs,
-      sucess: true,
+      success: true,
     });
   } catch (error) {
     console.error(error);
