@@ -3,10 +3,12 @@ import Navbar from "./shared/Navbar";
 import FilterCard from "./FilterCard";
 import Job from "./Job";
 import { useSelector } from "react-redux";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
 
-const jobArray = [1, 2, 3, 4, 5, 6, 7, 8];
+// const jobArray = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Jobs = () => {
+  useGetAllJobs();
   const { allJobs } = useSelector((store) => store.job);
   // console.log(allJobs);
 

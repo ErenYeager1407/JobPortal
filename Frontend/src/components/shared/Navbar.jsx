@@ -13,20 +13,22 @@ import { toast } from "sonner";
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const logOutHandler = async() => {
+  const logOutHandler = async () => {
     try {
-      const res = await axios.get(`${USER_API_END_POINT}/logout`, {withCredentials: true})
-      if(res.data.success){
-        dispatch(setUser(null))
+      const res = await axios.get(`${USER_API_END_POINT}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
         navigate("/");
-        toast.success(res.data.message)
+        toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
     }
-  }
-  const user = useSelector(store => store.auth.user);
+  };
+  const user = useSelector((store) => store.auth.user);
   return (
     <div className="bg-white">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-6">
@@ -37,21 +39,51 @@ function Navbar() {
         </div>
         <div className="flex items-center gap-3">
           <ul className="flex font-medium items-center gap-5">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/jobs">Jobs</Link></li>
-            <li><Link to="/browse">Browse</Link></li>
+            {user && user.role === "recruiter" ? (
+              <>
+                <li>
+                  <Link to="/admin/companies">Companies</Link>
+                </li>
+                <li>
+                  <Link to="/admin/jobs">Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/jobs">Jobs</Link>
+                </li>
+                <li>
+                  <Link to="/browse">Browse</Link>
+                </li>
+              </>
+            )}
           </ul>
           {!user ? (
             <div className="flex items-center">
-              <Link to='/login'><Button variant="Outline" className="cursor-pointer">Login</Button></Link>
-              <Link to='/signup'><Button className="bg-[#6A38C2] hover:bg-[#5b30a6] cursor-pointer">Signup</Button></Link>
+              <Link to="/login">
+                <Button variant="Outline" className="cursor-pointer">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button className="bg-[#6A38C2] hover:bg-[#5b30a6] cursor-pointer">
+                  Signup
+                </Button>
+              </Link>
             </div>
           ) : (
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src={user?.profile?.profilePhoto || "https://github.com/shadcn.png"}
+                    src={
+                      user?.profile?.profilePhoto ||
+                      "https://github.com/shadcn.png"
+                    }
                     alt="@shadcn"
                     className="grayscale"
                   />
@@ -61,7 +93,10 @@ function Navbar() {
                 <div className="flex items-center gap-2">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src={user?.profile?.profilePhoto || "https://github.com/shadcn.png"}
+                      src={
+                        user?.profile?.profilePhoto ||
+                        "https://github.com/shadcn.png"
+                      }
                       alt="@shadcn"
                       className="grayscale"
                     />
@@ -75,15 +110,22 @@ function Navbar() {
                   </div>
                 </div>
                 <div className="flex flex-col text-gray-600 my-2">
-                  <div className="flex w-fit items-center gap-2 ">
-                    <User2 />
-                    <Button variant="link" className="cursor-pointer">
-                      <Link to="/profile">View Profile</Link>
-                    </Button>
-                  </div>
+                  {user && user.role === "student" && (
+                    <div className="flex w-fit items-center gap-2 ">
+                      <User2 />
+                      <Button variant="link" className="cursor-pointer">
+                        <Link to="/profile">View Profile</Link>
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button variant="link" onClick={logOutHandler} className="cursor-pointer">
+                    <Button
+                      variant="link"
+                      onClick={logOutHandler}
+                      className="cursor-pointer"
+                    >
                       Logout
                     </Button>
                   </div>

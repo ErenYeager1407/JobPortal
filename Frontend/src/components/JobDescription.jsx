@@ -6,36 +6,70 @@ import { setSingleJob } from "@/redux/jobSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { JOB_API_END_POINT } from "@/utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
+import { toast } from "sonner";
 
 const JobDescription = () => {
-  const [open, setOpen] = useState(false)
-  const dispatch = useDispatch()
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const params = useParams();
-  const jobId = params.id
-  const {singleJob} = useSelector(store => store.job)
-  const {user} = useSelector(store => store.auth)
-  const isApplied = singleJob?.applications?.some(application => application.applicant === user?._id) || false
+  const jobId = params.id;
+  const { singleJob } = useSelector((store) => store.job);
+  const { user } = useSelector((store) => store.auth);
+  const isInitiallyApplied =
+    singleJob?.applications?.some(
+      (application) => application.applicant === user?._id,
+    ) || false;
+  const [isApplied, setIsApplied] = useState(isInitiallyApplied);
+
+  const applyJobHandler = async () => {
+    try {
+      const res = await axios.post(
+        `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+        {},
+        { withCredentials: true },
+      );
+      console.log(res.data);
+
+      if (res.data.success) {
+        setIsApplied(true);
+        const updatedSingleJob = {
+          ...singleJob,
+          applications: [...singleJob.applications, { applicant: user?._id }],
+        };
+        dispatch(setSingleJob(updatedSingleJob));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
-        const fetchSingleJob = async () => {
-            try {
-                const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
-                if(res.data.success){
-                    dispatch(setSingleJob(res.data.job))
-                }
-            } catch (error) {
-                console.log(error);
-            }
+    const fetchSingleJob = async () => {
+      try {
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
+
+        if(res.data.success){
+          dispatch(setSingleJob(res.data.job));
+          setIsApplied(res.data.job.applications.some(application => application.applicant === user?._id))
         }
-        fetchSingleJob();
-    }, [jobId, dispatch])
+      } catch (error) {
+        console.log(error);
+        toast.error(error.data.message)
+      }
+    }
+    fetchSingleJob();
+  })
+
   return (
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto my-4 p-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-bold text-xl">{singleJob?.company?.name}</h1>
+            <h1 className="font-bold text-xl">{singleJob?.title}</h1>
             <div className="flex items-center gap-2 mt-4">
               <Badge className="text-blue-700 font-bold" variant="outline">
                 {singleJob?.position} positions
@@ -49,6 +83,7 @@ const JobDescription = () => {
             </div>
           </div>
           <Button
+            onClick={isApplied ? null : applyJobHandler}
             disabled={isApplied}
             className={`rounded-lg ${isApplied ? "bg-gray-600 cursor-not-allowed" : "bg-[#7209b7] hover: bg-[#5f32ad]"}`}
           >
@@ -98,7 +133,7 @@ const JobDescription = () => {
           <h1 className="font-bold my-1">
             Posted Date:
             <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.createdAt.split('T')[0]}
+              {singleJob?.createdAt.split("T")[0]}
             </span>
           </h1>
         </div>
