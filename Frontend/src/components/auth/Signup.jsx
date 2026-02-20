@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -15,6 +15,7 @@ import { setLoading } from "@/redux/authSlice";
 // import getDataUri from ''
 
 function Signup() {
+  const {user} = useSelector(store => store.auth)
   const navigate = useNavigate()
   const [input, setInput] = useState({
     fullname: "",
@@ -76,6 +77,12 @@ function Signup() {
       dispatch(setLoading(false))
     }
   }
+
+  useEffect(() => {
+      if(user){
+        navigate("/")
+      }
+    }, [])
 
   return (
     <div>
