@@ -16,7 +16,7 @@ app.use(express.json()); //read json
 app.use(express.urlencoded({extended: true})) //read form data
 app.use(cookieParser()) //read cookies
 const corsOptions = {
-    origin: ["http://localhost:5173","https://your-frontend.vercel.app",],
+    origin: ["http://localhost:5173","https://jobify-asuy28fm2-erenyeager1407s-projects.vercel.app/",],
     credentials: true // allow browser to send credentials
 }
 app.use(cors(corsOptions)) //allow frontend and backend communiacations
