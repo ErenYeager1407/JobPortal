@@ -1,35 +1,53 @@
+import express from "express";
 import cookieParser from "cookie-parser";
-import express from "express"
-import cors from "cors"
+import cors from "cors";
 import dotenv from "dotenv";
+
 import connectDB from "./utils/db.js";
-import userRoute from './routes/user.route.js'
-import companyRoute from './routes/company.route.js'
-import jobRoute from './routes/job.route.js'
-import applicationRoute from './routes/application.route.js'
+import userRoute from "./routes/user.route.js";
+import companyRoute from "./routes/company.route.js";
+import jobRoute from "./routes/job.route.js";
+import applicationRoute from "./routes/application.route.js";
+
+dotenv.config();
 
 const app = express();
-dotenv.config({});//reads .env and stores variables in process.env
 
-//middlewares
-app.use(express.json()); //read json 
-app.use(express.urlencoded({extended: true})) //read form data
-app.use(cookieParser()) //read cookies
-const corsOptions = {
-    origin: ["http://localhost:5173","https://jobify-asuy28fm2-erenyeager1407s-projects.vercel.app/",],
-    credentials: true // allow browser to send credentials
-}
-app.use(cors(corsOptions)) //allow frontend and backend communiacations
+/* =======================
+   GLOBAL MIDDLEWARES
+======================= */
+
+// Parse JSON & form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Parse cookies
+app.use(cookieParser());
+
+// ✅ CORRECT CORS CONFIG (IMPORTANT)
+app.use(
+  cors({
+    origin: true,        // allows ALL Vercel preview + prod domains
+    credentials: true,   // allows cookies / auth
+  })
+);
+
+/* =======================
+   API ROUTES
+======================= */
+
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/company", companyRoute);
+app.use("/api/v1/job", jobRoute);
+app.use("/api/v1/application", applicationRoute);
+
+/* =======================
+   SERVER START
+======================= */
 
 const PORT = process.env.PORT || 3000;
 
-//apis
-app.use('/api/v1/user', userRoute)
-app.use('/api/v1/company', companyRoute)
-app.use('/api/v1/job', jobRoute)
-app.use('/api/v1/application', applicationRoute)
-
 app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server running at port ${PORT}`);
-})
+  connectDB();
+  console.log(`🚀 Server running on port ${PORT}`);
+});
