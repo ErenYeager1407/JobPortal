@@ -61,7 +61,7 @@ const JobDescription = () => {
       }
     }
     fetchSingleJob();
-  })
+  }, [])
 
   return (
     <div>

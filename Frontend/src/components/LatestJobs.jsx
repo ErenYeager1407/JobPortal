@@ -1,13 +1,12 @@
 import React from 'react'
 import LatestJobCards from './LatestJobCards';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 // const randomJobs = [1,2,3,4,5,6,7,8];
 
 const LatestJobs = () => {
     const {allJobs} = useSelector(store => store.job);
-    const navigate = useNavigate();
+    
   return (
     <div className='max-w-7xl mx-auto my-20 p-6'>
         <h1 className='text-4xl font-bold'><span className='text-[#6A38C2]'>Latest &Top</span> <span>Job Openings</span></h1>

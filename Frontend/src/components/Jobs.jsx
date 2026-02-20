@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./shared/Navbar";
 import FilterCard from "./FilterCard";
 import Job from "./Job";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import { setSearchedQuery } from "@/redux/jobSlice";
 import { motion } from "framer-motion";
@@ -11,10 +11,14 @@ import { motion } from "framer-motion";
 
 const Jobs = () => {
   useGetAllJobs();
-  setSearchedQuery("")
+  const dispatch = useDispatch();
   const { allJobs, searchedQuery } = useSelector((store) => store.job);
-  // console.log(allJobs);
   const [filterJobs, setFilterJobs] = useState(allJobs);
+
+  // Clear search query when coming to Jobs page
+  useEffect(() => {
+    dispatch(setSearchedQuery(""));
+  }, [dispatch]);
 
   useEffect(() => {
     if (searchedQuery) {
@@ -28,6 +32,7 @@ const Jobs = () => {
       setFilterJobs(filteredJobs);
     } else setFilterJobs(allJobs);
   }, [allJobs, searchedQuery]);
+  
   return (
     <div>
       <Navbar />
