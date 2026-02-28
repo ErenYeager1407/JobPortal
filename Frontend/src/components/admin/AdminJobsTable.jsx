@@ -32,6 +32,7 @@ const AdminJobsTable = () => {
                         <TableHead>Company Name</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead>Date</TableHead>
+                        {/* <TableHead>Status</TableHead> */}
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -42,9 +43,9 @@ const AdminJobsTable = () => {
                                 <TableCell>{job?.company?.name}</TableCell>
                                 <TableCell>{job?.title}</TableCell>
                                 <TableCell>{job?.createdAt.split("T")[0]}</TableCell>
-                                <TableCell className="text-right cursor-pointer">
+                                <TableCell className="text-right">
                                     <Popover>
-                                        <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
+                                        <PopoverTrigger className="cursor-pointer"><MoreHorizontal /></PopoverTrigger>
                                         <PopoverContent className="w-32">
                                             <div onClick={()=> navigate(`/admin/companies/${job._id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
                                                 <Edit2 className='w-4' />
