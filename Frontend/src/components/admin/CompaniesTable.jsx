@@ -15,18 +15,24 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const CompaniesTable = () => {
-  const { companies, searchCompanyByText } = useSelector((store) => store.company);
+  const { companies, searchCompanyByText } = useSelector(
+    (store) => store.company,
+  );
   const navigate = useNavigate();
   const [filterCompany, setFilterCompany] = useState(companies);
   useEffect(() => {
-    const filteredCompany = companies.length >= 0 && companies.filter((company) => {
-      if(!searchCompanyByText)return true;
-      return company?.name?.toLowerCase().includes(searchCompanyByText.toLowerCase())
-    })
-    setFilterCompany(filteredCompany)
-  }, [companies, searchCompanyByText])
+    const filteredCompany =
+      companies.length >= 0 &&
+      companies.filter((company) => {
+        if (!searchCompanyByText) return true;
+        return company?.name
+          ?.toLowerCase()
+          .includes(searchCompanyByText.toLowerCase());
+      });
+    setFilterCompany(filteredCompany);
+  }, [companies, searchCompanyByText]);
   return (
-    <div>
+    <div className="w-full overflow-x-auto">
       <Table>
         <TableCaption>A list of your recent registered companies</TableCaption>
 
@@ -40,7 +46,7 @@ const CompaniesTable = () => {
         </TableHeader>
 
         <TableBody>
-          {(!companies || companies.length === 0) ? (
+          {!companies || companies.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="text-center text-gray-500">
                 You haven't registered any companies yet
@@ -60,9 +66,7 @@ const CompaniesTable = () => {
                   </Avatar>
                 </TableCell>
 
-                <TableCell className="font-medium">
-                  {company.name}
-                </TableCell>
+                <TableCell className="font-medium">{company.name}</TableCell>
 
                 <TableCell>
                   {new Date(company.createdAt).toLocaleDateString()}
@@ -75,7 +79,12 @@ const CompaniesTable = () => {
                         <MoreHorizontal className="cursor-pointer" />
                       </PopoverTrigger>
 
-                      <PopoverContent className="w-32" onClick={() => navigate(`/admin/companies/${company._id}`)}>
+                      <PopoverContent
+                        className="w-32"
+                        onClick={() =>
+                          navigate(`/admin/companies/${company._id}`)
+                        }
+                      >
                         <div className="flex items-center gap-2 cursor-pointer">
                           <Edit2 className="w-4" />
                           <span>Edit</span>

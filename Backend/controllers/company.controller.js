@@ -86,12 +86,14 @@ export const updateCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
     const file = req.file;
-    //cloudinary
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content)
-    const logo = cloudResponse.secure_url;
+    const updateData = { name, description, website, location };
 
-    const updateData = { name, description, website, location, logo};
+    if (file) {
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      const logo = cloudResponse.secure_url;
+      updateData.logo = logo;
+    }
     const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });

@@ -10,13 +10,16 @@ import { setUser } from "@/redux/authSlice";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
+import SavedJobTable from "./SavedJobTable";
+import useGetSavedJobs from "@/hooks/useGetSavedJobs";
 
 const Profile = () => {
   useGetAppliedJobs();
+  useGetSavedJobs();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const isResume = user?.profile?.resume;
-  const skills = user?.profile?.skills || []
+  const skills = user?.profile?.skills || [];
   return (
     <div>
       <Navbar />
@@ -56,11 +59,9 @@ const Profile = () => {
         </div>
         <div className="my-5">
           <h1 className="font-bold">Skills</h1>
-          <div className="flex items-center gap-1 text-bold">
+          <div className="flex items-center gap-1 font-bold flex-wrap">
             {skills && skills.length > 0 ? (
-              skills.map((item, index) => (
-                <Badge key={index}>{item}</Badge>
-              ))
+              skills.map((item, index) => <Badge key={index}>{item}</Badge>)
             ) : (
               <span>NA</span>
             )}
@@ -87,6 +88,10 @@ const Profile = () => {
         <AppliedJobTable />
       </div>
       <UpdateProfileDialog open={open} setOpen={setOpen} />
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
+        <h1 className="font-bold text-lg my-4">Saved Jobs</h1>
+        <SavedJobTable/>
+      </div>
     </div>
   );
 };

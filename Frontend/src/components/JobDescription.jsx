@@ -1,81 +1,129 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import Navbar from "./shared/Navbar";
-import { setSingleJob } from "@/redux/jobSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
+import {
+  APPLICATION_API_END_POINT,
+  JOB_API_END_POINT,
+  USER_API_END_POINT,
+} from "@/utils/constant";
 import { toast } from "sonner";
-import useGetJobById from "@/hooks/useGetJobById";
+import { setSingleJob, setSavedJobs } from "@/redux/jobSlice";
+import { setUser } from "@/redux/authSlice";
 import useGetCompanyById from "@/hooks/useGetCompanyById";
 
 const JobDescription = () => {
-  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const params = useParams();
-  const jobId = params.id;
-  const { singleJob } = useSelector((store) => store.job);
-  const { user } = useSelector((store) => store.auth);
-  const isInitiallyApplied =
-    singleJob?.applications?.some(
-      (application) => application.applicant === user?._id,
-    ) || false;
-  const [isApplied, setIsApplied] = useState(isInitiallyApplied);
+  const { id: jobId } = useParams();
 
+  const { singleJob, savedJobs } = useSelector((store) => store.job);
+  const { user } = useSelector((store) => store.auth);
+
+  /* ================= APPLY STATE ================= */
+  const isApplied = useMemo(() => {
+    return (
+      singleJob?.applications?.some(
+        (application) => application.applicant === user?._id
+      ) || false
+    );
+  }, [singleJob, user]);
+
+  /* ================= SAVE STATE ================= */
+  const isSaved = useMemo(() => {
+    return savedJobs?.some((job) =>
+      typeof job === "string" ? job === jobId : job._id === jobId
+    );
+  }, [savedJobs, jobId]);
+
+  /* ================= APPLY JOB ================= */
   const applyJobHandler = async () => {
     try {
       const res = await axios.post(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
         {},
-        { withCredentials: true },
+        { withCredentials: true }
       );
-      console.log(res.data);
 
       if (res.data.success) {
-        setIsApplied(true);
-        const updatedSingleJob = {
+        const updatedJob = {
           ...singleJob,
-          applications: [...singleJob.applications, { applicant: user?._id }],
+          applications: [
+            ...singleJob.applications,
+            { applicant: user._id },
+          ],
         };
-        dispatch(setSingleJob(updatedSingleJob));
+        dispatch(setSingleJob(updatedJob));
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to apply");
     }
   };
 
-  useEffect(() => {
-    const fetchSingleJob = async () => {
-      try {
-        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
+  /* ================= SAVE / REMOVE JOB ================= */
+  const toggleSaveHandler = async () => {
+    try {
+      if (!isSaved) {
+        const res = await axios.post(
+          `${USER_API_END_POINT}/save-job`,
+          { jobId },
+          { withCredentials: true }
+        );
 
-        if(res.data.success){
+        dispatch(setSavedJobs(res.data.user.saveJobs));
+        dispatch(setUser(res.data.user));
+        toast.success("Job saved successfully");
+      } else {
+        const res = await axios.post(
+          `${USER_API_END_POINT}/remove-saved-job`,
+          { jobId },
+          { withCredentials: true }
+        );
+
+        dispatch(setSavedJobs(res.data.savedJobs));
+        dispatch(setUser({ ...user, saveJobs: res.data.savedJobs }));
+        toast.success("Job removed successfully");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Action failed");
+    }
+  };
+
+  /* ================= FETCH JOB ================= */
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
+          withCredentials: true,
+        });
+
+        if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
-          setIsApplied(res.data.job.applications.some(application => application.applicant === user?._id))
         }
       } catch (error) {
-        console.log(error);
-        toast.error(error.data.message)
+        toast.error("Failed to fetch job");
       }
-    }
-    fetchSingleJob();
-  }, [])
-  // useGetJobById()
-  useGetCompanyById(singleJob?.company)
-  const {singleCompany} = useSelector(store => store.company)
-  // console.log(singleCompany)
+    };
+    fetchJob();
+  }, [jobId, dispatch]);
+
+  /* ================= FETCH COMPANY ================= */
+  useGetCompanyById(singleJob?.company);
+  const { singleCompany } = useSelector((store) => store.company);
+
   return (
     <div>
       <Navbar />
+
       <div className="max-w-7xl mx-auto my-4 p-8">
-        <div className="flex items-center justify-between">
+        {/* HEADER */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-bold text-xl">{singleJob?.title}</h1>
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex flex-wrap items-center gap-2 mt-4">
               <Badge className="text-blue-700 font-bold" variant="outline">
                 {singleJob?.position} positions
               </Badge>
@@ -83,70 +131,56 @@ const JobDescription = () => {
                 {singleJob?.jobType}
               </Badge>
               <Badge className="text-[#7209b7] font-bold" variant="outline">
-                {singleJob?.salary}LPA
+                {singleJob?.salary} LPA
               </Badge>
             </div>
           </div>
-          <Button
-            onClick={isApplied ? null : applyJobHandler}
-            disabled={isApplied}
-            className={`rounded-lg ${isApplied ? "bg-gray-600 cursor-not-allowed" : "bg-[#7209b7] hover: bg-[#5f32ad]"}`}
-          >
-            {isApplied ? "Already applied" : "Apply now"}
-          </Button>
+
+          {/* ACTION BUTTONS */}
+          <div className="flex items-center gap-4 mt-6">
+            <Button
+              onClick={!isApplied ? applyJobHandler : undefined}
+              disabled={isApplied}
+              className={`rounded-lg ${
+                isApplied
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-[#7209b7] hover:bg-[#5f32ad]"
+              }`}
+            >
+              {isApplied ? "Already applied" : "Apply now"}
+            </Button>
+
+            <Button
+              onClick={toggleSaveHandler}
+              variant={isSaved ? "outline" : "default"}
+              className={`rounded-lg px-6 cursor-pointer ${
+                isSaved
+                  ? "border-green-600 text-green-600 hover:bg-red-100 hover:text-black hover:border-red-600"
+                  : "bg-white text-black border hover:bg-green-100 hover:text-black hover:border-green-600"
+              }`}
+            >
+              {isSaved ? "Saved" : "Save"}
+            </Button>
+          </div>
         </div>
-        <h1 className="border-b-2 border-b-gray-300 font-medium py-4">
+
+        {/* DESCRIPTION */}
+        <h1 className="border-b-2 border-b-gray-300 font-medium py-4 mt-6">
           Job Description
         </h1>
-        <div className="my-4">
-          <h1 className="font-bold my-1">
-            Role:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.title}
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Company:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleCompany?.name}
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Location:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.location}
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Description:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.description}
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Experience:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.expirenceLevel}yrs
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Salary:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.salary}LPA
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Total Applicants:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.applications?.length}
-            </span>
-          </h1>
-          <h1 className="font-bold my-1">
-            Posted Date:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.createdAt.split("T")[0]}
-            </span>
-          </h1>
+
+        <div className="my-4 space-y-2">
+          <p><b>Role:</b> {singleJob?.title}</p>
+          <p><b>Company:</b> {singleCompany?.name}</p>
+          <p><b>Location:</b> {singleJob?.location}</p>
+          <p><b>Description:</b> {singleJob?.description}</p>
+          <p><b>Experience:</b> {singleJob?.expirenceLevel} yrs</p>
+          <p><b>Salary:</b> {singleJob?.salary} LPA</p>
+          <p><b>Total Applicants:</b> {singleJob?.applications?.length}</p>
+          <p>
+            <b>Posted Date:</b>{" "}
+            {singleJob?.createdAt?.split("T")[0]}
+          </p>
         </div>
       </div>
     </div>

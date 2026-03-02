@@ -34,13 +34,13 @@ const CompanyCreate = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Error creating company")
+      toast.error(error?.response?.data?.message || "Error creating company");
     }
   };
   return (
     <div>
       <Navbar />
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto p-6 sm:p-0">
         <div className="my-10">
           <h1 className="font-bold text-2xl">Your company name</h1>
           <p className="text-gray-500">

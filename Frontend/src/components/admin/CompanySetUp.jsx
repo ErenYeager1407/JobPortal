@@ -23,7 +23,7 @@ const CompanySetUp = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const { singleCompany } = useSelector(store => store.company);
+  const { singleCompany } = useSelector((store) => store.company);
   const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
@@ -70,7 +70,7 @@ const CompanySetUp = () => {
         {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
-        }
+        },
       );
 
       if (res.data.success) {
@@ -88,9 +88,9 @@ const CompanySetUp = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-xl mx-auto my-10">
+      <div className="max-w-xl mx-auto my-10 p-6 sm:p-0">
         <form onSubmit={submitHandler}>
-          <div className="flex items-center gap-5 p-8">
+          <div className="flex items-center gap-5 p-4 sm:p-8">
             <Button
               type="button"
               variant="outline"
@@ -103,30 +103,50 @@ const CompanySetUp = () => {
             <h1 className="font-bold text-xl">Company Setup</h1>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Company Name</Label>
-              <Input name="name" value={input.name} onChange={changeEventHandler} />
+              <Input
+                name="name"
+                value={input.name}
+                onChange={changeEventHandler}
+              />
             </div>
 
             <div>
               <Label>Description</Label>
-              <Input name="description" value={input.description} onChange={changeEventHandler} />
+              <Input
+                name="description"
+                value={input.description}
+                onChange={changeEventHandler}
+              />
             </div>
 
             <div>
               <Label>Website</Label>
-              <Input name="website" value={input.website} onChange={changeEventHandler} />
+              <Input
+                name="website"
+                value={input.website}
+                onChange={changeEventHandler}
+              />
             </div>
 
             <div>
               <Label>Location</Label>
-              <Input name="location" value={input.location} onChange={changeEventHandler} />
+              <Input
+                name="location"
+                value={input.location}
+                onChange={changeEventHandler}
+              />
             </div>
 
             <div>
               <Label>Logo</Label>
-              <Input type="file" accept="image/*" onChange={changeFileHandler} />
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={changeFileHandler}
+              />
             </div>
           </div>
 

@@ -11,11 +11,14 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import { setSavedJobs } from "@/redux/jobSlice";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, user } = useSelector((store) => store.auth);
+  const { loading, user} = useSelector((store) => store.auth);
+  // console.log("user", user);
+  
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -45,6 +48,9 @@ function Login() {
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         navigate("/");
+        // console.log("user", res.data.user);
+        dispatch(setSavedJobs(res.data.user.saveJobs));
+        
         toast.success(res.data.message);
       }
     } catch (error) {
@@ -56,10 +62,10 @@ function Login() {
   };
 
   useEffect(() => {
-    if(user){
-      navigate("/")
+    if (user) {
+      navigate("/");
     }
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -67,10 +73,10 @@ function Login() {
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
+          className="w-full sm:w-1/2 border border-gray-200 rounded-md p-4 my-10 mx-4 sm:mx-0"
         >
           <h1 className="font-bold text-xl mb-5">Log In</h1>
-          <div >
+          <div>
             <div className="my-2">
               <Label className="my-2">Email</Label>
               <Input

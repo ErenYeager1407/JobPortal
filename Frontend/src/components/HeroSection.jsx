@@ -19,7 +19,7 @@ const HeroSection = () => {
         <span className="mx-auto px-4 py-2 rounded-full bg-gray-100 text-[#F83002] font-medium">
           No. 1 Job Hunt Site
         </span>
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-3xl md:text-5xl font-bold">
           Search, Apply, & <br /> Get your{" "}
           <span className="text-[#6A38C2]">Dream Job</span>
         </h1>
@@ -32,7 +32,7 @@ const HeroSection = () => {
             e.preventDefault(); // prevent page reload
             searchJobHandler();
           }}
-          className="flex w-[40%] shadow-lg border border-grey-200 pl-3 rounded-full items-center gap-4 mx-auto h-9"
+          className="flex w-full sm:w-[70%] md:w-[40%] shadow-lg border border-gray-200 pl-3 rounded-full items-center mx-auto h-9"
         >
           <input
             type="text"
@@ -41,8 +41,11 @@ const HeroSection = () => {
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <Button type="submit" className="rounded-r-full bg-[#6A38C2]">
-            <Search className="h-5 w-5" />
+          <Button
+            type="submit"
+            className="rounded-r-full bg-[#6A38C2] h-full w-12 flex items-center justify-center"
+          >
+            <Search className="h-4 w-4" />
           </Button>
         </form>
       </div>

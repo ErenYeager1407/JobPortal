@@ -40,7 +40,7 @@ const ApplicantsTable = () => {
   };
 
   return (
-    <div>
+    <div className="w-full overflow-x-auto">
       <Table>
         <TableCaption>A list of your recent applied user</TableCaption>
         <TableHeader>

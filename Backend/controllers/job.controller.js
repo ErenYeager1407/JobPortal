@@ -138,3 +138,62 @@ export const getAdminJobs = async (req, res) => {
   }
 };
 
+export const updateJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+
+    const {
+      title,
+      description,
+      requirements,
+      salary,
+      location,
+      jobType,
+      experienceLevel,
+      position,
+    } = req.body;
+
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+        success: false,
+      });
+    }
+
+    let parsedRequirements = [];
+
+    if (Array.isArray(requirements)) {
+      parsedRequirements = requirements;
+    } else if (typeof requirements === "string") {
+      parsedRequirements = requirements
+        .split(",")
+        .map(r => r.trim())
+        .filter(Boolean);
+    }
+
+    job.title = title;
+    job.description = description;
+    job.requirements = parsedRequirements;
+    job.salary = Number(salary);
+    job.location = location;
+    job.jobType = jobType;
+    job.expirenceLevel = experienceLevel;
+    job.position = position;
+
+    await job.save();
+
+    return res.status(200).json({
+      message: "Job updated successfully",
+      success: true,
+      job,
+    });
+
+  } catch (error) {
+    console.error("UPDATE JOB ERROR:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};

@@ -17,7 +17,8 @@ const JobSetup = () => {
   useGetJobById(id);
 
   const { singleJob } = useSelector((state) => state.job);
-
+  console.log(singleJob);
+  
   const [input, setInput] = useState({
     title: "",
     description: "",
@@ -38,11 +39,9 @@ const JobSetup = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(
-        `${JOB_API_END_POINT}/update/${id}`,
-        input,
-        { withCredentials: true }
-      );
+      const res = await axios.put(`${JOB_API_END_POINT}/update/${id}`, input, {
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         toast.success(res.data.message);
@@ -60,7 +59,7 @@ const JobSetup = () => {
         description: singleJob.description || "",
         requirements: singleJob.requirements || "",
         salary: singleJob.salary || "",
-        experienceLevel: singleJob.experienceLevel || "",
+        experienceLevel: singleJob.expirenceLevel || "",
         location: singleJob.location || "",
         jobType: singleJob.jobType || "",
         position: singleJob.position || "",
