@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
+import { setSavedJobs, setSingleJob } from "@/redux/jobSlice";
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ function Navbar() {
       });
       if (res.data.success) {
         dispatch(setUser(null));
+        dispatch(setSavedJobs([]));
+        dispatch(setSingleJob(null));
         navigate("/");
         toast.success(res.data.message);
       }
