@@ -38,7 +38,7 @@ const Jobs = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-7xl mx-auto mt-5">
+      <div className="max-w-7xl mx-auto mt-5 px-4">
         <div className="flex flex-col lg:flex-row gap-5">
           <div className="lg:hidden flex items-center gap-2">
             <button
@@ -57,7 +57,7 @@ const Jobs = () => {
           {filterJobs.length <= 0 ? (
             <span>Job not Found</span>
           ) : (
-            <div className="flex-1 h-[88vh] overflow-y-auto pb-5">
+            <div className="flex-1 pb-5">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-3">
                 {filterJobs.map((job) => (
                   <motion.div

@@ -23,7 +23,7 @@ const Browse = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-7xl mx-auto my-10">
+      <div className="max-w-7xl mx-auto my-10 px-4">
         <h1 className="font-bold text-xl mx-10 my-3">
           Search Results ({filteredJobs.length})
         </h1>

@@ -39,7 +39,7 @@ const Job = ({ job }) => {
 
         dispatch(setSavedJobs(res.data.user.saveJobs));
         dispatch(setUser(res.data.user));
-        toast.success("Job saved");
+        toast.success("Job saved successfully");
       } else {
         // REMOVE SAVED JOB
         const res = await axios.post(
@@ -50,7 +50,7 @@ const Job = ({ job }) => {
 
         dispatch(setSavedJobs(res.data.savedJobs));
         dispatch(setUser({ ...user, saveJobs: res.data.savedJobs }));
-        toast.success("Job removed");
+        toast.success("Job removed successfully");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Action failed");
