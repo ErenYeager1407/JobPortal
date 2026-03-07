@@ -88,11 +88,10 @@ function Navbar() {
                       "https://github.com/shadcn.png"
                     }
                     alt="@shadcn"
-                    className="grayscale"
                   />
                 </Avatar>
               </PopoverTrigger>
-              <PopoverContent className="w-80">
+              <PopoverContent className="w-80 mx-2">
                 <div className="flex items-center gap-2">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
@@ -101,7 +100,6 @@ function Navbar() {
                         "https://github.com/shadcn.png"
                       }
                       alt="@shadcn"
-                      className="grayscale"
                     />
                   </Avatar>
 
