@@ -9,6 +9,7 @@ import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 
 const app = express();
+app.set("trust proxy", 1);
 dotenv.config({}); //reads .env and stores variables in process.env
 
 //middlewares
