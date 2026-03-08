@@ -22,9 +22,9 @@ const Profile = () => {
   const isResume = user?.profile?.resume;
   const skills = user?.profile?.skills || [];
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <Navbar />
-      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 mx-3 sm:mx-auto p-4 sm:p-8 overflow-hidden">
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
@@ -49,13 +49,13 @@ const Profile = () => {
         </div>
 
         <div className="my-5">
-          <div className="flex items-center gap-3 my-2">
-            <Mail />
-            <span>{user.email}</span>
+          <div className="flex items-center gap-3 my-2 min-w-0">
+            <Mail className="shrink-0" />
+            <span className="truncate">{user.email}</span>
           </div>
-          <div className="flex items-center gap-3 my-2">
-            <Contact />
-            <span>{user.phoneNumber}</span>
+          <div className="flex items-center gap-3 my-2 min-w-0">
+            <Contact className="shrink-0" />
+            <span className="truncate">{user.phoneNumber}</span>
           </div>
         </div>
         <div className="my-5">
@@ -84,12 +84,12 @@ const Profile = () => {
           )}
         </div>
       </div>
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
+      <div className="max-w-4xl mx-3 sm:mx-auto bg-white rounded-2xl overflow-hidden">
         <h1 className="font-bold text-lg my-4 mx-2">Applied Jobs</h1>
         <AppliedJobTable />
       </div>
       <UpdateProfileDialog open={open} setOpen={setOpen} />
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
+      <div className="max-w-4xl mx-3 sm:mx-auto bg-white rounded-2xl overflow-hidden">
         <h1 className="font-bold text-lg my-4 mx-5">Saved Jobs</h1>
         <div>
           <SavedJobTable />

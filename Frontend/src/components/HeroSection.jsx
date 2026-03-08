@@ -23,15 +23,13 @@ const HeroSection = () => {
           Search, Apply, & <br /> Get your{" "}
           <span className="text-[#6A38C2]">Dream Job</span>
         </h1>
-        <p>
-          Search, Apply & Get Your Dream Job with NextHire
-        </p>
+        <p>Search, Apply & Get Your Dream Job with NextHire</p>
         <form
           onSubmit={(e) => {
             e.preventDefault(); // prevent page reload
             searchJobHandler();
           }}
-          className="flex w-full sm:w-[70%] md:w-[40%] shadow-lg border border-gray-200 pl-3 rounded-full items-center mx-auto h-9"
+          className="flex w-[85%] sm:w-[70%] md:w-[40%] shadow-lg border border-gray-200 pl-3 rounded-full items-center mx-auto h-9"
         >
           <input
             type="text"
